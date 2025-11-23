@@ -1,11 +1,21 @@
-import { PrismaClient } from '@prisma/client';
+// simple DB utilities wrapper for common operations
+import { prisma } from "@/lib/prisma";
 
-const globalForPrisma = global as unknown as { prisma: PrismaClient };
-
-export const prisma =
-  globalForPrisma.prisma ||
-  new PrismaClient({
-    log: ['query', 'error', 'warn'],
+export async function getParishes() {
+  return prisma.parish.findMany({
+    include: { towns: true }
   });
+}
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+export async function seedParishIfEmpty() {
+  const count = await prisma.parish.count();
+  if (count === 0) {
+    await prisma.parish.createMany({
+      data: [
+        { name: "Kingston" },
+        { name: "Saint Andrew" },
+        { name: "Portland" }
+      ]
+    });
+  }
+}
