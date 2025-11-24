@@ -1,20 +1,22 @@
 interface TransportCardProps {
-  type: string;              // Taxi, Shuttle, Bus, Private Driver, etc.
-  company: string;
-  from: string;
-  to: string;
-  price: string;
-  eta?: string;              // Estimated arrival time
+  provider: string;
+  type: string; // Taxi, Bus, Shuttle, Car Rental, etc.
+  parish: string;
+  town?: string;
+  priceRange?: string;
+  contact?: string;
+  imageUrl?: string;
   onClick?: () => void;
 }
 
 export default function TransportCard({
+  provider,
   type,
-  company,
-  from,
-  to,
-  price,
-  eta,
+  parish,
+  town,
+  priceRange,
+  contact,
+  imageUrl,
   onClick,
 }: TransportCardProps) {
   return (
@@ -25,17 +27,33 @@ export default function TransportCard({
         transition-all duration-200 hover:shadow-md hover:-translate-y-1
       "
     >
-      <div className="flex justify-between items-center mb-3">
-        <h3 className="font-bold text-lg">{type}</h3>
-        <span className="text-green-600 font-semibold">{price}</span>
-      </div>
+      {imageUrl ? (
+        <img
+          src={imageUrl}
+          alt={provider}
+          className="w-full h-40 object-cover rounded-lg mb-3"
+        />
+      ) : (
+        <div className="w-full h-40 bg-gray-200 rounded-lg mb-3" />
+      )}
 
-      <div className="text-gray-700 space-y-1">
-        <p><span className="font-semibold">Company:</span> {company}</p>
-        <p><span className="font-semibold">From:</span> {from}</p>
-        <p><span className="font-semibold">To:</span> {to}</p>
-        {eta && <p className="text-sm text-gray-500">ETA: {eta}</p>}
-      </div>
+      <h3 className="font-bold text-lg">{provider}</h3>
+
+      <p className="text-sm text-gray-700">
+        {type} — {town ? `${town}, ` : ""}{parish}
+      </p>
+
+      {priceRange && (
+        <p className="text-green-600 font-semibold mt-2">
+          {priceRange}
+        </p>
+      )}
+
+      {contact && (
+        <p className="text-blue-600 text-sm mt-1">
+          Contact: {contact}
+        </p>
+      )}
     </div>
   );
 }
